@@ -13,7 +13,7 @@
  * 
  */
 
- #include "garoa_button.h"
+#include "garoa_button.h"
 
 #define BUTTON_PIN 2
 #define RED_PIN    8
@@ -43,7 +43,7 @@ void loop() {
   button.update(); // necessário invocar toda volta do laço
 
   if (button.just_pressed()) { // botão foi pressionado agorinha?
-    // soma 1 em LEN_LEDS para ter um estado desligado
+    // somar 1 em LEN_LEDS para ter um estado desligado
     colorIndex = (colorIndex + 1) % (LEN_LEDS + 1);
     setColor(colorIndex);
   }
