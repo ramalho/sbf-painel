@@ -4,33 +4,33 @@
 
 class Jumper {
   public:
-    Jumper(uint8_t pin, uint8_t pin_mode);
-    bool is_closed();
+    Jumper(uint8_t pin, uint8_t pinMode);
+    bool isClosed();
   private:
     uint8_t _pin;
-    uint8_t _closed_state;
+    uint8_t _closedState;
 };
 
 
 class OutputOnOff {
   public:
-    OutputOnOff(int pin, int signal_on);
-    bool is_on();
-    void turn_on();
-    void turn_off();
+    OutputOnOff(int pin, int signalOn);
+    bool isOn();
+    void turnOn();
+    void turnOff();
     bool toggle();
-    void start_cycling(unsigned long cycle_duration);
+    void startCycling(unsigned long cycleDuration);
     int update();
-    void stop_cycling();
+    void stopCycling();
   private:
     int _pin;
     bool _on;
-    int _signal_on;
-    int _signal_off;
+    int _signalOn;
+    int _signalOff;
     bool _cycling;
-    int _cycle_count;
-    unsigned long _cycle_start_time;
-    unsigned long _cycle_duration;
+    int _cycleCount;
+    unsigned long _cycleStartTime;
+    unsigned long _cycleDuration;
 };
 
 

@@ -2,8 +2,8 @@
 
 Button::Button(uint8_t pin, uint8_t polarity)
   : _pin(pin), _polarity(polarity),
-    _state(!polarity), _last_state(!polarity),
-    _already_pressed(false), _press_started(0)
+    _state(!polarity), _lastState(!polarity),
+    _alreadyPressed(false), _pressStarted(0)
 {
   begin();
 }
@@ -19,35 +19,35 @@ void Button::begin() {
 #endif
   }
   _state = digitalRead(_pin);
-  _last_state = _state;
+  _lastState = _state;
 }
 
 void Button::update() {
-  _last_state = _state;
+  _lastState = _state;
   _state = digitalRead(_pin);
 
-  if (is_pressed()) {
-    if (!_already_pressed) {
-      _already_pressed = true;
-      _press_started = millis();
+  if (isPressed()) {
+    if (!_alreadyPressed) {
+      _alreadyPressed = true;
+      _pressStarted = millis();
     }
   } else {
-    _already_pressed = false;
-    _press_started = 0;
+    _alreadyPressed = false;
+    _pressStarted = 0;
   }
 }
 
-bool Button::is_pressed()  { return _state == _polarity; }
-bool Button::is_released() { return _state != _polarity; }
+bool Button::isPressed()  { return _state == _polarity; }
+bool Button::isReleased() { return _state != _polarity; }
 
-bool Button::just_pressed() {
-  return (_state != _last_state) && (_state == _polarity);
+bool Button::justPressed() {
+  return (_state != _lastState) && (_state == _polarity);
 }
 
-bool Button::just_released() {
-  return (_state != _last_state) && (_state != _polarity);
+bool Button::justReleased() {
+  return (_state != _lastState) && (_state != _polarity);
 }
 
-bool Button::is_held(unsigned long int duration) {
-  return is_pressed() && ((millis() - _press_started) >= duration);
+bool Button::isHeld(unsigned long int duration) {
+  return isPressed() && ((millis() - _pressStarted) >= duration);
 }

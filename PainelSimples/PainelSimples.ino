@@ -9,8 +9,8 @@ const uint8_t BUTTON_PIN = A1;
 const uint8_t LINE_RELAY_PIN = 11;
 
 
-OutputOnOff red_led(RED_PIN, HIGH);
-OutputOnOff green_led(GREEN_PIN, HIGH);
+OutputOnOff redLed(RED_PIN, HIGH);
+OutputOnOff greenLed(GREEN_PIN, HIGH);
 Button powerBtn(BUTTON_PIN, LOW);
 OutputOnOff lineRelay(LINE_RELAY_PIN, LOW);
 
@@ -24,29 +24,29 @@ void setup() {
 
 void loop() {
   powerBtn.update();
-  if (powerBtn.just_pressed()) {
+  if (powerBtn.justPressed()) {
     running = !running;
-    green_led.toggle();
-    if (green_led.is_on()) lineRelay.turn_on();
-    else lineRelay.turn_off();
+    greenLed.toggle();
+    if (greenLed.isOn()) lineRelay.turnOn();
+    else lineRelay.turnOff();
   }
 
   if (digitalRead(LDR_PIN) == LOW) {
     if (!alerting) {
       alerting = true;
-      red_led.start_cycling(200);  // 5 Hz
-      green_led.turn_off();
+      redLed.startCycling(200);  // 5 Hz
+      greenLed.turnOff();
     }
     tone(BUZZER_PIN, 900, 170);
   } else {
     if (alerting) {
       alerting = false;
-      red_led.stop_cycling();
-      red_led.turn_off();
+      redLed.stopCycling();
+      redLed.turnOff();
       if (running)
-        green_led.turn_on();
+        greenLed.turnOn();
     }
   }
-  red_led.update();
+  redLed.update();
   delay(10);
 }

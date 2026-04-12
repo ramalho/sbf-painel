@@ -8,19 +8,19 @@ class Button {
     Button(uint8_t pin, uint8_t polarity = LOW);
     void begin();
     void update();
-    bool is_pressed();
-    bool is_released();
-    bool just_pressed();
-    bool just_released();
-    bool is_held(unsigned long int duration);
+    bool isPressed();
+    bool isReleased();
+    bool justPressed();
+    bool justReleased();
+    bool isHeld(unsigned long int duration);
 
   private:
     uint8_t _pin;
     bool _polarity;
     bool _state;
-    bool _last_state;
-    bool _already_pressed;
-    unsigned long int _press_started;
+    bool _lastState;
+    bool _alreadyPressed;
+    unsigned long int _pressStarted;
 };
 
 #endif

@@ -3,75 +3,75 @@
 
 /************************************************************* Jumper class */
 
-Jumper::Jumper(uint8_t pin, uint8_t pin_mode) {
+Jumper::Jumper(uint8_t pin, uint8_t pinMode) {
   _pin = pin;
-  _closed_state = pin_mode == INPUT_PULLUP ? LOW : HIGH;
-  pinMode(pin, pin_mode);
+  _closedState = pinMode == INPUT_PULLUP ? LOW : HIGH;
+  ::pinMode(pin, pinMode);
 }
 
-bool Jumper::is_closed() {
-  return digitalRead(_pin) == _closed_state;
+bool Jumper::isClosed() {
+  return digitalRead(_pin) == _closedState;
 }
 
 /******************************************************** OutputOnOff class */
 
-OutputOnOff::OutputOnOff(int pin, int signal_on) {
+OutputOnOff::OutputOnOff(int pin, int signalOn) {
   _pin = pin;
-  _signal_on = signal_on;
-  _signal_off = signal_on == HIGH ? LOW : HIGH;
+  _signalOn = signalOn;
+  _signalOff = signalOn == HIGH ? LOW : HIGH;
   _on = false;
   _cycling = false;
-  _cycle_count = 0;
-  _cycle_start_time = 0;
-  _cycle_duration = 0;
+  _cycleCount = 0;
+  _cycleStartTime = 0;
+  _cycleDuration = 0;
 
   pinMode(_pin, OUTPUT);
-  digitalWrite(_pin, _signal_off);
+  digitalWrite(_pin, _signalOff);
 }
 
-bool OutputOnOff::is_on() {
+bool OutputOnOff::isOn() {
   return _on;
 }
 
-void OutputOnOff::turn_on() {
-  digitalWrite(_pin, _signal_on);
+void OutputOnOff::turnOn() {
+  digitalWrite(_pin, _signalOn);
   _on = true;
 }
- 
-void OutputOnOff::turn_off() {
-  digitalWrite(_pin, _signal_off);
+
+void OutputOnOff::turnOff() {
+  digitalWrite(_pin, _signalOff);
   _on = false;
 }
 
 bool OutputOnOff::toggle() {
-  if (_on) turn_off();
-  else turn_on();
+  if (_on) turnOff();
+  else turnOn();
   return _on;
 }
 
-void OutputOnOff::start_cycling(unsigned long cycle_duration) {
-  _cycle_duration = cycle_duration;
+void OutputOnOff::startCycling(unsigned long cycleDuration) {
+  _cycleDuration = cycleDuration;
   _cycling = true;
-  _cycle_count = 0;
-  _cycle_start_time = millis();
+  _cycleCount = 0;
+  _cycleStartTime = millis();
 }
 
 int OutputOnOff::update() {
   // update state of device and
   // return cycle_count
   if (!_cycling) return 0;
-  unsigned long half_cycle = _cycle_duration / 2;
-  if ((millis() - _cycle_start_time) >= half_cycle) {
-    _cycle_start_time = millis();
+  unsigned long halfCycle = _cycleDuration / 2;
+  if ((millis() - _cycleStartTime) >= halfCycle) {
+    _cycleStartTime = millis();
     toggle();
-    if (_on) _cycle_count++;
+    if (_on) _cycleCount++;
   }
-  return _cycle_count;
+  return _cycleCount;
 }
 
-void OutputOnOff::stop_cycling() {
+void OutputOnOff::stopCycling() {
   _cycling = false;
-  turn_off();
+  turnOff();
 }
 
 
