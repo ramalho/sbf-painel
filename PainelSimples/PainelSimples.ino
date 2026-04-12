@@ -1,11 +1,11 @@
 #include "garoa_digital_io.h"
 #include "garoa_button.h"
 
-#define LDR_PIN    A0
-#define BUZZER_PIN 13
-#define RED_PIN    8
-#define GREEN_PIN  9
-#define BUTTON_PIN 2
+const uint8_t LDR_PIN    = A0;
+const uint8_t BUZZER_PIN = 13;
+const uint8_t RED_PIN    = 2;
+const uint8_t GREEN_PIN  = 3;
+const uint8_t BUTTON_PIN = A1;
 
 OutputOnOff red_led(RED_PIN, HIGH);
 OutputOnOff green_led(GREEN_PIN, HIGH);
