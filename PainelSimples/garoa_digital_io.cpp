@@ -15,7 +15,7 @@ bool Jumper::isClosed() {
 
 /******************************************************** OutputOnOff class */
 
-OutputOnOff::OutputOnOff(int pin, int signalOn) {
+DigitalOutput::DigitalOutput(int pin, int signalOn) {
   _pin = pin;
   _signalOn = signalOn;
   _signalOff = signalOn == HIGH ? LOW : HIGH;
@@ -29,34 +29,43 @@ OutputOnOff::OutputOnOff(int pin, int signalOn) {
   digitalWrite(_pin, _signalOff);
 }
 
-bool OutputOnOff::isOn() {
+bool DigitalOutput::isOn() {
   return _on;
 }
 
-void OutputOnOff::turnOn() {
+void DigitalOutput::turnOn() {
   digitalWrite(_pin, _signalOn);
   _on = true;
 }
 
-void OutputOnOff::turnOff() {
+void DigitalOutput::turnOff() {
   digitalWrite(_pin, _signalOff);
   _on = false;
 }
 
-bool OutputOnOff::toggle() {
+void DigitalOutput::set(bool on) {
+  if (on) turnOn();
+  else turnOff();
+}
+
+bool DigitalOutput::toggle() {
   if (_on) turnOff();
   else turnOn();
   return _on;
 }
 
-void OutputOnOff::startCycling(unsigned long cycleDuration) {
+bool DigitalOutput::isCycling() {
+  return _cycling;
+}
+
+void DigitalOutput::startCycling(unsigned long cycleDuration) {
   _cycleDuration = cycleDuration;
   _cycling = true;
   _cycleCount = 0;
   _cycleStartTime = millis();
 }
 
-int OutputOnOff::update() {
+int DigitalOutput::update() {
   // update state of device and
   // return cycle_count
   if (!_cycling) return 0;
@@ -69,9 +78,39 @@ int OutputOnOff::update() {
   return _cycleCount;
 }
 
-void OutputOnOff::stopCycling() {
+void DigitalOutput::stopCycling() {
   _cycling = false;
   turnOff();
 }
 
+
+/************************************************************** Buzzer class */
+
+Buzzer::Buzzer(uint8_t pin) {
+  _pin = pin;
+  _playing = false;
+  _indefinite = false;
+  _stopTime = 0;
+}
+
+void Buzzer::start(unsigned int frequency, unsigned long duration) {
+  tone(_pin, frequency);
+  _playing = true;
+  _indefinite = (duration == 0);
+  _stopTime = millis() + duration;
+}
+
+void Buzzer::stop() {
+  noTone(_pin);
+  _playing = false;
+}
+
+bool Buzzer::isPlaying() {
+  return _playing;
+}
+
+void Buzzer::update() {
+  if (_playing && !_indefinite && millis() >= _stopTime)
+    stop();
+}
 

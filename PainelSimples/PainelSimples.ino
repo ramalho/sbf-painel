@@ -1,6 +1,8 @@
 #include "garoa_digital_io.h"
 #include "garoa_button.h"
 
+const unsigned int LOOP_DELAY = 10;  // ms; required for debounce
+
 const uint8_t LDR_PIN    = A0;
 const uint8_t BUZZER_PIN = 13;
 const uint8_t RED_PIN    = 2;
@@ -9,44 +11,49 @@ const uint8_t BUTTON_PIN = A1;
 const uint8_t LINE_RELAY_PIN = 11;
 
 
-OutputOnOff redLed(RED_PIN, HIGH);
-OutputOnOff greenLed(GREEN_PIN, HIGH);
+DigitalOutput redLed(RED_PIN, HIGH);
+DigitalOutput greenLed(GREEN_PIN, HIGH);
 Button powerBtn(BUTTON_PIN, LOW);
-OutputOnOff lineRelay(LINE_RELAY_PIN, LOW);
+DigitalOutput lineRelay(LINE_RELAY_PIN, LOW);
+Buzzer buzzer(BUZZER_PIN);
 
-bool alerting = false;
-bool running = false;
+bool lineActive = false;
 
 void setup() {
   pinMode(LDR_PIN, INPUT);
-  pinMode(BUZZER_PIN, OUTPUT);
 }
 
-void loop() {
-  powerBtn.update();
+void handlePower() {
   if (powerBtn.justPressed()) {
-    running = !running;
-    greenLed.toggle();
-    if (greenLed.isOn()) lineRelay.turnOn();
-    else lineRelay.turnOff();
+    lineActive = !lineActive;
+    greenLed.set(lineActive);
+    lineRelay.set(lineActive);
   }
+}
 
+void handleShortCircuit() {
   if (digitalRead(LDR_PIN) == LOW) {
-    if (!alerting) {
-      alerting = true;
+    if (!redLed.isCycling()) {
       redLed.startCycling(200);  // 5 Hz
       greenLed.turnOff();
+      buzzer.start(900, 0);  // indefinite
     }
-    tone(BUZZER_PIN, 900, 170);
   } else {
-    if (alerting) {
-      alerting = false;
+    if (redLed.isCycling()) {
       redLed.stopCycling();
       redLed.turnOff();
-      if (running)
+      buzzer.stop();
+      if (lineActive)
         greenLed.turnOn();
     }
   }
-  redLed.update();
-  delay(10);
+}
+
+void loop() {
+  handlePower();
+  handleShortCircuit();
+  powerBtn.update();  // required for debounce
+  redLed.update();    // required to blink
+  buzzer.update();    // required for timed tones
+  delay(LOOP_DELAY);
 }
