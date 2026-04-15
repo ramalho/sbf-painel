@@ -12,37 +12,6 @@ bool Jumper::isClosed() {
 }
 
 
-SwitchSPST::SwitchSPST(uint8_t pin, uint8_t onPolarity)
-  : _pin(pin), _onPolarity(onPolarity),
-    _state(!onPolarity), _lastState(!onPolarity)
-{
-  begin();
-}
-
-void SwitchSPST::begin() {
-  if (_onPolarity == LOW) {
-    pinMode(_pin, INPUT_PULLUP);
-  } else {
-#ifdef INPUT_PULLDOWN
-    pinMode(_pin, INPUT_PULLDOWN);
-#else
-    pinMode(_pin, INPUT);
-#endif
-  }
-  _state = digitalRead(_pin);
-  _lastState = _state;
-}
-
-void SwitchSPST::update() {
-  _lastState = _state;
-  _state = digitalRead(_pin);
-}
-
-bool SwitchSPST::state()      { return _state == _onPolarity; }
-bool SwitchSPST::isOn()       { return _state == _onPolarity; }
-bool SwitchSPST::isOff()      { return _state != _onPolarity; }
-bool SwitchSPST::justChanged() { return _state != _lastState; }
-
 Button::Button(uint8_t pin, uint8_t polarity)
   : _pin(pin), _polarity(polarity),
     _state(!polarity), _lastState(!polarity),
@@ -91,6 +60,38 @@ bool Button::justReleased() {
   return (_state != _lastState) && (_state != _polarity);
 }
 
-bool Button::isHeld(unsigned long int duration) {
-  return isPressed() && ((millis() - _pressStarted) >= duration);
+bool Button::isHeld(unsigned long int duration_in_ms) {
+  return isPressed() && ((millis() - _pressStarted) >= duration_in_ms);
 }
+
+
+SwitchSPST::SwitchSPST(uint8_t pin, uint8_t onPolarity)
+  : _pin(pin), _onPolarity(onPolarity),
+    _state(!onPolarity), _lastState(!onPolarity)
+{
+  begin();
+}
+
+void SwitchSPST::begin() {
+  if (_onPolarity == LOW) {
+    pinMode(_pin, INPUT_PULLUP);
+  } else {
+#ifdef INPUT_PULLDOWN
+    pinMode(_pin, INPUT_PULLDOWN);
+#else
+    pinMode(_pin, INPUT);
+#endif
+  }
+  _state = digitalRead(_pin);
+  _lastState = _state;
+}
+
+void SwitchSPST::update() {
+  _lastState = _state;
+  _state = digitalRead(_pin);
+}
+
+bool SwitchSPST::state()      { return _state == _onPolarity; }
+bool SwitchSPST::isOn()       { return _state == _onPolarity; }
+bool SwitchSPST::isOff()      { return _state != _onPolarity; }
+bool SwitchSPST::justChanged() { return _state != _lastState; }

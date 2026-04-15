@@ -30,7 +30,7 @@ class DigitalOutput {
 class Buzzer {
   public:
     Buzzer(uint8_t pin);
-    void start(unsigned int frequency, unsigned long duration); // duration ms; 0 = indefinite
+    void start(unsigned int frequency, unsigned long duration_in_ms); // duration 0 = "forever"
     void stop();
     bool isPlaying();
     void update();  // call each loop() to handle auto-stop

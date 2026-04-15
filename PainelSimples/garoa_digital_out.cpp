@@ -1,7 +1,7 @@
 #include "Arduino.h"
 #include "garoa_digital_out.h"
 
-/******************************************************** OutputOnOff class */
+/******************************************************** DigitalOutput class */
 
 DigitalOutput::DigitalOutput(int pin, int signalOn) {
   _pin = pin;
@@ -81,11 +81,11 @@ Buzzer::Buzzer(uint8_t pin) {
   _stopTime = 0;
 }
 
-void Buzzer::start(unsigned int frequency, unsigned long duration) {
+void Buzzer::start(unsigned int frequency, unsigned long duration_in_ms) {
   tone(_pin, frequency);
   _playing = true;
-  _indefinite = (duration == 0);
-  _stopTime = millis() + duration;
+  _indefinite = (duration_in_ms == 0);
+  _stopTime = millis() + duration_in_ms;
 }
 
 void Buzzer::stop() {
