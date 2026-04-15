@@ -3,6 +3,33 @@
 
 #include "Arduino.h"
 
+class Jumper {
+  public:
+    Jumper(uint8_t pin, uint8_t pinMode);
+    bool isClosed();
+  private:
+    uint8_t _pin;
+    uint8_t _closedState;
+};
+
+
+class SwitchSPST {
+  public:
+    SwitchSPST(uint8_t pin, uint8_t onPolarity = LOW);
+    void begin();
+    void update();
+    bool state();
+    bool isOn();
+    bool isOff();
+    bool justChanged();
+
+  private:
+    uint8_t _pin;
+    bool _onPolarity;
+    bool _state;
+    bool _lastState;
+};
+
 class Button {
   public:
     Button(uint8_t pin, uint8_t polarity = LOW);

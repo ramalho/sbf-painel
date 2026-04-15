@@ -1,17 +1,5 @@
 #include "Arduino.h"
-#include "garoa_digital_io.h"
-
-/************************************************************* Jumper class */
-
-Jumper::Jumper(uint8_t pin, uint8_t pinMode) {
-  _pin = pin;
-  _closedState = pinMode == INPUT_PULLUP ? LOW : HIGH;
-  ::pinMode(pin, pinMode);
-}
-
-bool Jumper::isClosed() {
-  return digitalRead(_pin) == _closedState;
-}
+#include "garoa_digital_out.h"
 
 /******************************************************** OutputOnOff class */
 

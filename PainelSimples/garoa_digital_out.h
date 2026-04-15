@@ -2,16 +2,6 @@
 #define garoa_digital_io_h
 
 
-class Jumper {
-  public:
-    Jumper(uint8_t pin, uint8_t pinMode);
-    bool isClosed();
-  private:
-    uint8_t _pin;
-    uint8_t _closedState;
-};
-
-
 class DigitalOutput {
   public:
     DigitalOutput(int pin, int signalOn);

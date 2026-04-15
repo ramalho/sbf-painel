@@ -1,5 +1,5 @@
-#include "garoa_digital_io.h"
-#include "garoa_button.h"
+#include "garoa_digital_out.h"
+#include "garoa_digital_in.h"
 
 const unsigned int LOOP_DELAY = 10;  // ms; required for debounce
 
@@ -17,12 +17,11 @@ DigitalOutput redLed(RED_PIN, HIGH);
 DigitalOutput greenLed(GREEN_PIN, HIGH);
 Button powerBtn(MAIN_TRACK_BUTTON_PIN, LOW);
 DigitalOutput mainTrackRelay(MAIN_TRACK_RELAY_PIN, LOW);
-Button reverseInput(REVERSE_INPUT_PIN, LOW);
+SwitchSPST reverseSwitch(REVERSE_INPUT_PIN, LOW);
 DigitalOutput reverseRelay(REVERSE_RELAY_PIN, LOW);
 Buzzer buzzer(BUZZER_PIN);
 
 bool lineActive = false;
-bool reverseActive = false;
 
 void handlePower();
 void handleReverse();
@@ -30,11 +29,12 @@ void handleShortCircuit();
 
 void setup() {
   pinMode(LDR_PIN, INPUT);
+  reverseRelay.set(reverseSwitch.state());
 }
 
 void updateControls() {
   powerBtn.update();    // required for debounce
-  reverseInput.update();  // required for debounce
+  reverseSwitch.update();  // required for debounce
   redLed.update();      // required to blink on background
   buzzer.update();      // required for timed tones
 }
@@ -56,9 +56,8 @@ void handlePower() {
 }
 
 void handleReverse() {
-  if (reverseInput.justPressed()) {
-    reverseActive = !reverseActive;
-    reverseRelay.set(reverseActive);
+  if (reverseSwitch.justChanged()) {
+    reverseRelay.set(reverseSwitch.isOn());
   }
 }
 
